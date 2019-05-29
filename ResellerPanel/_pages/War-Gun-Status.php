@@ -7,8 +7,8 @@ if( !isset($msg) and !isset($type) ){
 ?>
 
 <?php
-if(isset($_POST['WarCardNum'])){
-$wcardn = $_POST['WarCardNum'];
+if( isset($_REQUEST['WarCardNum'])){
+$wcardn = $_REQUEST['WarCardNum'];
 }
 
 $SqlSelWar = "SELECT * FROM warranty_gun WHERE war_cardnum = '$wcardn'" ;
@@ -22,10 +22,12 @@ if ( $SqlSelWar->rowCount() == 0 ) {
 	$type = "alert-danger";
 	$msg = "شماره کارت گارانتی صحیح نمی باشد .";
 	$faicon = "fa-asterisk";
+	header( "Location: " . $_SERVER['HTTP_REFFER'] );
+	exit();
 } else {
 	$type = "alert-info";
 	$faicon = "fa-info-circle";
-	$msg = "در صورت تائید اطلاعات گارانتی سلاح لطفا نسبت به پرداخت هزینه اقدام نمائید .";
+	$msg = "در صورت تائید اطلاعات گارانتی محصول لطفا نسبت به پرداخت هزینه اقدام نمائید .";
 
 	$gunid = $RowWar['war_gun_id'];
 	$SqlSelGun = "SELECT * FROM gun_profile WHERE gun_id = '$gunid'" ;
@@ -48,7 +50,7 @@ if ( $SqlSelWar->rowCount() == 0 ) {
                     <i class="fa fa-circle fa-lg"></i>
                 </li>
                 <li>
-                    <span><i class="fa fa-barcode"></i> اطلاعات گارانتی سلاح</span>
+                    <span><i class="fa fa-barcode"></i> اطلاعات گارانتی محصول</span>
                 </li>
             </ul>
         </div>
@@ -66,7 +68,7 @@ if ( $SqlSelWar->rowCount() == 0 ) {
                 <div class="portlet box blue">
                     <div class="portlet-title">
                         <div class="caption">
-                            <i class="fa fa-barcode"></i>اطلاعات گارانتی سلاح</div>
+                            <i class="fa fa-barcode"></i>اطلاعات گارانتی محصول</div>
                         <div class="tools">
                             <a href="javascript:;" class="collapse"> </a>
                             <a href="javascript:;" class="remove"> </a>
@@ -77,18 +79,18 @@ if ( $SqlSelWar->rowCount() == 0 ) {
 <!--                    <form class="form-horizontal" action="_pages/War-Payment.php" method="post">     -->
                         <form class="form-horizontal" action="index.php?Page=War-Payment" method="post">                        
                             <div class="form-body">
-                                <h3 class="form-section">اطلاعات سلاح</h3>
+                                <h3 class="form-section">اطلاعات محصول</h3>
                                 <div class="row">
 									<div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="gunname" class="control-label col-md-3">نام سلاح :</label>
+                                            <label for="gunname" class="control-label col-md-3">نام محصول :</label>
                                             <label for="gunname" class="control-label col-md-9"><?php echo $RowGun['gun_name']; ?></label>                                            
                                         </div>
                                     </div>  
                                     <!--/span-->
 									<div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="gunname" class="control-label col-md-3">سریال سلاح :</label>
+                                            <label for="gunname" class="control-label col-md-3">سریال محصول :</label>
                                             <label for="gunname" class="control-label col-md-9"><?php echo $RowWar['war_gun_sn']; ?></label>                                            
                                         </div>
                                     </div> 								                                                                      
@@ -100,7 +102,8 @@ if ( $SqlSelWar->rowCount() == 0 ) {
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="gunname" class="control-label col-md-3">شماره کارت گارانتی :</label>
-                                            <label for="gunname" class="control-label col-md-9"><?php echo $RowWar['war_cardnum']; ?></label>                                            
+                                            <label for="gunname" class="control-label col-md-9"><?php echo str_repeat("X", strlen($RowWar['war_cardnum'])); ?></label>                                            
+                                            <label for="gunname" class="control-label col-md-9">( شماره کارت گارانتی بعد از پرداخت صادر خواهد شد . )</label>                                            
                                         </div>
                                     </div>
                                     <!--/span-->
@@ -142,13 +145,13 @@ if ( $SqlSelWar->rowCount() == 0 ) {
                                                     <i class="fa fa-credit-card"></i> پرداخت آنلاین</span>
                                                 </button>
                                                 
-                                                <button type="submit" class="btn btn-primary">
+                                                <!--button type="submit" class="btn btn-primary">
                                                     <i class="fa fa-pencil"></i> ثبت فیش بانکی</span>
-                                                </button>                                                
+                                                </button-->                                                
     
-                                                <button type="reset" class="btn btn-default">
+                                                <a type="reset" class="btn btn-default" href="<?php echo $_SERVER['HTTP_REFERER'] ?>">
                                                     <i class="fa fa-refresh"></i> انصراف</span>
-                                                </button>    
+                                                </a>    
                                                 
                                             </div>
                                         </div>
