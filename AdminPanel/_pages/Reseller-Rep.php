@@ -3,17 +3,17 @@
 if ( isset( $_GET['remove_id'] ) )
 {
 
-	$check = $conn->prepare("SELECT * FROM gun_profile WHERE gun_id = ?");
+	$check = $conn->prepare("SELECT * FROM reseller_profile WHERE rs_id = ?");
 	$check->execute( array( $_GET['remove_id'] ) );
 	
 	if ( $check->rowCount( ) != 0 )
 	{
 	
-		$remove = $conn->prepare("DELETE FROM gun_profile WHERE gun_id = ?");
+		$remove = $conn->prepare("DELETE FROM reseller_profile WHERE rs_id = ?");
 		$remove->execute( array( $_GET['remove_id'] ) );
 	
 		$type = "alert-success";
-		$msg = "محصول موردنظر با موفقیت حذف گردید !";
+		$msg = "نماینده موردنظر با موفقیت حذف گردید !";
 		$faicon = "fa-check-circle";	
 	}
 }
@@ -41,7 +41,7 @@ if ( isset( $_GET['remove_id'] ) )
                 <i class="fa fa-circle fa-lg"></i>
             </li>
             <li>
-                <span><i class="fa fa-user"></i> ویرایش اطلاعات محصول</span>
+                <span><i class="fa fa-user"></i> ویرایش اطلاعات نماینده</span>
             </li>
         </ul>
         
@@ -65,10 +65,10 @@ if ( isset( $_GET['remove_id'] ) )
 try 
 {
 	// Define and perform the SQL SELECT query
-	$SqlSelGun = "SELECT g.*, c.cat_name FROM gun_profile as g INNER JOIN category_profile as c ON g.cat_id = c.cat_id";
-	$ResSelGun = $conn->query($SqlSelGun);
+	$sql = "SELECT * FROM reseller_profile";
+	$Res = $conn->query($sql);
 
-	$ResSelGun->setFetchMode(PDO::FETCH_ASSOC);
+	$Res->setFetchMode(PDO::FETCH_ASSOC);
 
 ?>
 
@@ -76,10 +76,10 @@ try
                                 <div class="portlet box blue">
                                     <div class="portlet-title">
                                         <div class="caption">
-                                            <i class="fa fa-list"></i>لیست محصولات</div>
+                                            <i class="fa fa-list"></i>لیست نمایندگان</div>
                                         <div class="actions">
-                                            <a href="index.php?Page=Gun-Reg" class="btn btn-default btn-sm" target="_blank">
-                                                <i class="fa fa-plus"></i> افزودن محصول </a>
+                                            <a href="index.php?Page=Reseller-Reg" class="btn btn-default btn-sm" target="_blank">
+                                                <i class="fa fa-plus"></i> افزودن نماینده </a>
                                             <a href="#" class="btn btn-default btn-sm">
                                                 <i class="fa fa-print"></i> چاپ </a>
                                         </div>
@@ -89,34 +89,38 @@ try
                                             <thead>
                                                 <tr>
                                                     <th>تنظیمات</th>
-                                                    <th>شماره</th>
-                                                    <th>نام دسته بندی</th>
-                                                    <th>نام محصول</th>
-                                                    <th>ویژگی ها</th>
-                                                    <th>هزینه گارانتی</th>                                                    
+                                                    <th>شناسه</th>
+                                                    <th>نام و نام خانوادگی</th>
+                                                    <th>نام فروشگاه</th>
+                                                    <th>استان و شهرستان</th>                                                    
+                                                    <th>ایمیل</th>
+                                                    <th>تلفن همراه</th>                                                    
+                                                    <th>تلفن فروشگاه</th>                                                    
                                                 </tr>
                                             </thead>
                                             <tbody>
 
 											<?php
-                                                while( $Row = $ResSelGun->fetch() )
+                                                while( $Row = $Res->fetch() )
 												{
                                             ?>
 
 												<tr class="odd gradeX">
                                                     <td>
-													<a href="./index.php?Page=Gun-Edit&id=<?php echo $Row['gun_id']; ?>" class="btn btn-outline btn-sm purple">
+													<a href="./index.php?Page=Reseller-Edit&id=<?php echo $Row['rs_id']; ?>" class="btn btn-outline btn-sm purple">
                                                     <i class="fa fa-pencil"></i> ویرایش </a>
 	
-													<a href="./index.php?Page=Gun-Rep&remove_id=<?php echo $Row['gun_id']; ?>" class="btn btn-outline red btn-sm black">
+													<a href="./index.php?Page=Reseller-Rep&remove_id=<?php echo $Row['rs_id']; ?>" class="btn btn-outline red btn-sm black">
                                                     <i class="fa fa-trash"></i> حذف </a>
                                                                                                                                                                                     
                                                     </td>
-                                                    <td><?php echo $Row['gun_id']; ?></td>
-                                                    <td><?php echo $Row['cat_name']; ?></td>
-                                                    <td><?php echo $Row['gun_name']; ?></td>
-                                                    <td><?php echo str_replace("\n", "<br />", $Row['attr']); ?></td>
-                                                    <td><?php echo $Row['gun_wprice']; ?></td>
+                                                    <td><?php echo $Row['rs_id']; ?></td>
+                                                    <td><?php echo $Row['rs_fname'] . " " . $Row['rs_lname']; ?></td>
+                                                    <td><?php echo $Row['rs_shop']; ?></td>
+                                                    <td><?php echo $Row['rs_state'] . " - " . $Row['rs_city']; ?></td>                                                    
+                                                    <td><?php echo $Row['rs_email']; ?></td>
+                                                    <td><?php echo $Row['rs_mobile']; ?></td>
+                                                    <td><?php echo $Row['rs_phone']; ?></td>
                                                 </tr>
 											<?php
 												}

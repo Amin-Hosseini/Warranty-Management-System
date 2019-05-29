@@ -1,76 +1,35 @@
 <?php
-// Reg Product Info
-if(isset($_POST['GunReg']) and $_POST['GunReg']=="Insert"){
-
-	$cat_id = $_POST['cat_id'];
+// Edit Product
+if(isset($_POST['GunEdit']) and $_POST['GunEdit']=="Edit"){
+    $cat_id = $_POST['cat_id'];
 	$gunname = $_POST['gunname'];
 	$attr = $_POST['attr'];
-	$wprice = $_POST['wprice'];		
+	$wprice = $_POST['wprice'];
 
-	$gunname = sanitize($gunname);
-	$attr = sanitize($attr);
-	$wprice = sanitize($wprice);				
+	$prd = $conn->prepare("SELECT * FROM gun_profile WHERE gun_id = ?");
+	$prd->execute( array( $_GET['id'] ) );
 
-	// Check Product Name
-	$check = $conn->query("SELECT gun_name FROM gun_profile WHERE gun_name = '$gunname' AND cat_id = " . $cat_id);
-	
-	// Check Empty 
-	if ( empty($gunname) or empty($attr) or empty($wprice) ){
-		$type = "alert-danger";
-		$msg = "لطفا موارد ستاره دار را تکمیل نمائید .";
-		$faicon = "fa-asterisk";
-	}
-	
-	// Check Product Name
-	elseif ($check->rowCount() != 0 ) {
-		$type = "alert-danger";
-		$msg = "محصولی با نام مشابه قبلا ثبت گردیده است .";
-		$faicon = "fa-asterisk";
-	}
-
-	else {
-
-		try {
-			// set the PDO error mode to exception
-			$SqlInsGun = "INSERT INTO gun_profile ( gun_name , attr, gun_wprice, cat_id )
-			VALUES ( '$gunname' , '$attr' , '$wprice', '$cat_id' )";
-
-			// use exec() because no results are returned
-			$conn->exec($SqlInsGun);
-			// echo "New record created successfully";
-			}
-		catch(PDOException $e)
-			{
-			// echo $sql . "<br>" . $e->getMessage();
-				$type = "alert-danger";
-				$msg = "اشکال در ثبت اطلاعات .";
-				$faicon = "fa-asterisk";
-			}
-
-			if($conn){
-				$_POST = NULL;
-				$type = "alert-success";
-				$msg = "ثبت اطلاعات با موفقیت انجام گردید .";
-				$faicon = "fa-check-circle";		
-			} else {
-				$type = "alert-danger";
-				$msg = "اشکال در ثبت اطلاعات .";
-				$faicon = "fa-asterisk";
-			}
-
-		//$conn = null;
-	
+	if ( $prd->rowCount( ) != 0 )
+	{
+		$prd = $conn->prepare("UPDATE gun_profile SET gun_name = ? , attr = ? , cat_id = ? , gun_wprice = ? WHERE gun_id = ?");
+		$prd->execute( array( $gunname, $attr, $cat_id, $wprice, $_GET['id'] ) );
+		
+		$type = "alert-success";
+		$msg = "محصول موردنظر با موفقیت ویرایش گردید !";
+		$faicon = "fa-check-circle";
 	}
 }
+
+//Get this product info
+$prd = $conn->prepare("SELECT * FROM gun_profile WHERE gun_id = ?");
+$prd->execute( array( $_GET['id'] ) );
+
+if ( $prd->rowCount( ) == 0 )
+	header( "Location: ./index.php?Page=Gun-Rep" );
+else
+	$Row = $prd->fetch();
 ?>
-<head>
-    <!-- BEGIN PAGE LEVEL PLUGINS -->
-    <link href="../assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
-    <link href="../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css" rel="stylesheet" type="text/css" />
-    <!-- END PAGE LEVEL PLUGINS -->
-</head>
-    <!-- END HEAD -->
-	
+
 <div class="page-content-wrapper">
     <!-- BEGIN CONTENT BODY -->
     <div class="page-content">
@@ -83,7 +42,7 @@ if(isset($_POST['GunReg']) and $_POST['GunReg']=="Insert"){
                     <i class="fa fa-circle fa-lg"></i>
                 </li>
                 <li>
-                    <span><i class="fa fa-barcode"></i> ثبت اطلاعات محصول</span>
+                    <span><i class="fa fa-barcode"></i> ویرایش اطلاعات محصول</span>
                 </li>
             </ul>
         </div>
@@ -91,11 +50,12 @@ if(isset($_POST['GunReg']) and $_POST['GunReg']=="Insert"){
         <!-- END PAGE HEADER-->
         <div class="row">
             <div class="col-md-12">
-                <?php
+
+				<?php
                 if( !isset($msg) and !isset($type) ){
 					$type = "alert-info";
 					$faicon = "fa-info-circle";
-					$msg = "جهت ثبت اطلاعات لطفا موارد درخواستی را تکمیل و بر روی ثبت کلیلک نمائید .";
+					$msg = "جهت ویرایش اطلاعات لطفا موارد درخواستی را تکمیل و بر روی ویرایش اطلاعات کلیک نمائید .";
 				}
                 ?>
                 <div class="custom-alerts alert <?php echo $type; ?> fade in">
@@ -103,9 +63,7 @@ if(isset($_POST['GunReg']) and $_POST['GunReg']=="Insert"){
                     <i class="fa <?php echo $faicon; ?> fa-lg"></i>
                     <span><?php echo $msg; ?></span>
                 </div>
-                
-				
-				<?php
+								<?php
 					// Define and perform the SQL SELECT query
 	$SqlSelGun = "SELECT * FROM category_profile";
 	$ResSelGun = $conn->query($SqlSelGun);
@@ -116,7 +74,7 @@ if(isset($_POST['GunReg']) and $_POST['GunReg']=="Insert"){
                 <div class="portlet box blue">
                     <div class="portlet-title">
                         <div class="caption">
-                            <i class="fa fa-barcode"></i>ثبت اطلاعات محصول</div>
+                            <i class="fa fa-barcode"></i>ویرایش اطلاعات محصول</div>
                         <div class="tools">
                             <a href="javascript:;" class="collapse"> </a>
                             <a href="javascript:;" class="remove"> </a>
@@ -136,10 +94,10 @@ if(isset($_POST['GunReg']) and $_POST['GunReg']=="Insert"){
                                                 <div class="input-icon right">
                                                     <select name="cat_id" class="form-control">
                                             <?php
-                                                while( $Row = $ResSelGun->fetch() )
+                                                while( $Row1 = $ResSelGun->fetch() )
 												{
                                             ?>
-                                                        <option value="<?php echo $Row['cat_id'] ?>" ><?php echo $Row['cat_name'] ?></option>
+                                                        <option value="<?php echo $Row1['cat_id'] ?>" <?php echo $Row['cat_id'] == $Row1['cat_id'] ? 'selected' : '' ?>><?php echo $Row1['cat_name'] ?></option>
                                                 <?php
 												}
 												?>
@@ -152,15 +110,13 @@ if(isset($_POST['GunReg']) and $_POST['GunReg']=="Insert"){
                                 </div>
                                 <!--/row-->
                                 <div class="row">
-
-
 									<div class="col-md-6">
                                         <div class="form-group">
                                             <label for="gunname" class="control-label col-md-4">نام محصول : <i class="fa fa-asterisk"></i></label>
                                             <div class="col-md-8">
                                                 <div class="input-icon right">
                                                     <i class="fa fa-pencil"></i>
-                                                    <input type="text" name="gunname" id="gunname" class="form-control" value="<?php if(isset($_POST['gunname'])){ echo $_POST['gunname']; } ?>" placeholder="نام محصول"> 
+                                                    <input type="text" name="gunname" id="gunname" class="form-control" value="<?php if(isset($Row['gun_name'])){ echo $Row['gun_name']; } ?>" placeholder="نام محصول"> 
                                                 </div>
                                             </div>
                                         </div>
@@ -175,7 +131,7 @@ if(isset($_POST['GunReg']) and $_POST['GunReg']=="Insert"){
                                             <div class="col-md-8">
                                                 <div class="input-icon right">
                                                     
-                                                    <textarea type="text" name="attr" id="attr" class="form-control"><?php if(isset($_POST['attr'])){ echo $_POST['attr']; } ?></textarea>
+                                                    <textarea type="text" name="attr" id="attr" class="form-control"><?php if(isset($Row['attr'])){ echo $Row['attr']; } ?></textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -194,7 +150,7 @@ if(isset($_POST['GunReg']) and $_POST['GunReg']=="Insert"){
                                             <div class="col-md-9">
                                                 <div class="input-icon right">
                                                     <i class="fa fa-dollar"></i>
-                                                    <input type="text" name="wprice" id="wprice" class="form-control" value="<?php if(isset($_POST['wprice'])){ echo $_POST['wprice']; } ?>" placeholder="هزینه گارانتی"> 
+                                                    <input type="text" name="wprice" id="wprice" class="form-control" value="<?php if(isset($Row['gun_wprice'])){ echo $Row['gun_wprice']; } ?>" placeholder="هزینه گارانتی"> 
                                                 </div>
                                             </div>
                                         </div>
@@ -214,14 +170,14 @@ if(isset($_POST['GunReg']) and $_POST['GunReg']=="Insert"){
                                             <div class="col-md-offset-3 col-md-9">
 
                                                 <button type="submit" class="btn btn-primary">
-                                                    <i class="fa fa-save"></i> ثبت اطلاعات</span>
+                                                    <i class="fa fa-save"></i> ویرایش اطلاعات</span>
                                                 </button>
     
                                                 <button type="reset" class="btn btn-default">
                                                     <i class="fa fa-refresh"></i> بازنویسی</span>
                                                 </button>    
                             
-                                                <input type="hidden" name="GunReg" value="Insert" />
+                                                <input type="hidden" name="GunEdit" value="Edit" />
                                                 
                                             </div>
                                         </div>
@@ -233,7 +189,7 @@ if(isset($_POST['GunReg']) and $_POST['GunReg']=="Insert"){
                         <!-- END FORM-->
                     </div>
                 </div>
-
+                
             </div>
         </div>
     </div>

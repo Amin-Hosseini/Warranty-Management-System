@@ -1,19 +1,19 @@
 <?php
-//Remove a product
+//Remove a category
 if ( isset( $_GET['remove_id'] ) )
 {
 
-	$check = $conn->prepare("SELECT * FROM gun_profile WHERE gun_id = ?");
+	$check = $conn->prepare("SELECT * FROM category_profile WHERE cat_id = ?");
 	$check->execute( array( $_GET['remove_id'] ) );
 	
 	if ( $check->rowCount( ) != 0 )
 	{
 	
-		$remove = $conn->prepare("DELETE FROM gun_profile WHERE gun_id = ?");
+		$remove = $conn->prepare("DELETE FROM category_profile WHERE cat_id = ?");
 		$remove->execute( array( $_GET['remove_id'] ) );
 	
 		$type = "alert-success";
-		$msg = "محصول موردنظر با موفقیت حذف گردید !";
+		$msg = "دسته بندی موردنظر با موفقیت حذف گردید !";
 		$faicon = "fa-check-circle";	
 	}
 }
@@ -41,7 +41,7 @@ if ( isset( $_GET['remove_id'] ) )
                 <i class="fa fa-circle fa-lg"></i>
             </li>
             <li>
-                <span><i class="fa fa-user"></i> ویرایش اطلاعات محصول</span>
+                <span><i class="fa fa-user"></i> ویرایش اطلاعات دسته بندی</span>
             </li>
         </ul>
         
@@ -65,7 +65,7 @@ if ( isset( $_GET['remove_id'] ) )
 try 
 {
 	// Define and perform the SQL SELECT query
-	$SqlSelGun = "SELECT g.*, c.cat_name FROM gun_profile as g INNER JOIN category_profile as c ON g.cat_id = c.cat_id";
+	$SqlSelGun = "SELECT * FROM category_profile";
 	$ResSelGun = $conn->query($SqlSelGun);
 
 	$ResSelGun->setFetchMode(PDO::FETCH_ASSOC);
@@ -76,10 +76,10 @@ try
                                 <div class="portlet box blue">
                                     <div class="portlet-title">
                                         <div class="caption">
-                                            <i class="fa fa-list"></i>لیست محصولات</div>
+                                            <i class="fa fa-list"></i>لیست دسته بندی ها</div>
                                         <div class="actions">
-                                            <a href="index.php?Page=Gun-Reg" class="btn btn-default btn-sm" target="_blank">
-                                                <i class="fa fa-plus"></i> افزودن محصول </a>
+                                            <a href="index.php?Page=Gun-Cat" class="btn btn-default btn-sm" target="_blank">
+                                                <i class="fa fa-plus"></i> افزودن دسته بندی </a>
                                             <a href="#" class="btn btn-default btn-sm">
                                                 <i class="fa fa-print"></i> چاپ </a>
                                         </div>
@@ -91,9 +91,7 @@ try
                                                     <th>تنظیمات</th>
                                                     <th>شماره</th>
                                                     <th>نام دسته بندی</th>
-                                                    <th>نام محصول</th>
-                                                    <th>ویژگی ها</th>
-                                                    <th>هزینه گارانتی</th>                                                    
+                                                
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -105,18 +103,15 @@ try
 
 												<tr class="odd gradeX">
                                                     <td>
-													<a href="./index.php?Page=Gun-Edit&id=<?php echo $Row['gun_id']; ?>" class="btn btn-outline btn-sm purple">
+													<a href="./index.php?Page=Gun-Edit-Cat&id=<?php echo $Row['cat_id']; ?>" class="btn btn-outline btn-sm purple">
                                                     <i class="fa fa-pencil"></i> ویرایش </a>
 	
-													<a href="./index.php?Page=Gun-Rep&remove_id=<?php echo $Row['gun_id']; ?>" class="btn btn-outline red btn-sm black">
+													<a href="./index.php?Page=Gun-Rep-Cat&remove_id=<?php echo $Row['cat_id']; ?>" class="btn btn-outline red btn-sm black">
                                                     <i class="fa fa-trash"></i> حذف </a>
                                                                                                                                                                                     
                                                     </td>
-                                                    <td><?php echo $Row['gun_id']; ?></td>
+                                                    <td><?php echo $Row['cat_id']; ?></td>
                                                     <td><?php echo $Row['cat_name']; ?></td>
-                                                    <td><?php echo $Row['gun_name']; ?></td>
-                                                    <td><?php echo str_replace("\n", "<br />", $Row['attr']); ?></td>
-                                                    <td><?php echo $Row['gun_wprice']; ?></td>
                                                 </tr>
 											<?php
 												}
