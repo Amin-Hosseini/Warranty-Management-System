@@ -1,0 +1,21 @@
+/* here you can put your own css to customize and override the theme */
+@font-face {
+	font-family: IRANSans;
+	font-style: normal;
+	font-weight: 500;
+	src: url('../../../global/fonts/IRANSans/eot/IRANSansWeb_Medium.eot');
+	src: url('../../../global/fonts/IRANSans/eot/IRANSansWeb_Medium.eot?#iefix') format('embedded-opentype'),  /* IE6-8 */
+		 url('../../../global/fonts/IRANSans/woff2/IRANSansWeb_Medium.woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('../../../global/fonts/IRANSans/woff/IRANSansWeb_Medium.woff') format('woff'),  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+		 url('../../../global/fonts/IRANSans/ttf/IRANSansWeb_Medium.ttf') format('truetype');
+}
+
+
+.form-group label i {
+	color:#ff5153;
+	font-size:10px;
+}
+
+
+
+

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<OrderSystem>
+	<Info>
+		<EmailTo>info@sabadsaz.com</EmailTo>
+		<RegSubject>ثبت نام کاربر</RegSubject>
+		<OrderSubject>ثبت سفارش جدید</OrderSubject>
+		<ContactSubject>ارسال پیام تماس</ContactSubject>		
+		<OrderSMS>سفارش سامانه پیام کوتاه</OrderSMS>		
+		<ReceiptSub>ثبت نام کاربر</ReceiptSub>		
+	</Info>  
+</OrderSystem>
+
