@@ -4,9 +4,6 @@ include ('./_inc/jdf.php');
 require_once("./_inc/os_config.php");
 require_once("./_inc/connect.php"); 
 
-if ( isset( $_GET['p'] ) )
-echo "XqXp*T4zp.pI";
-
 if ( isset($_POST['Check']) )
 {
 
