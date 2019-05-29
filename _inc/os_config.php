@@ -4,7 +4,7 @@ define("USERNAME","root");
 define("PASSWORD","");
 define("DATABASE","ae_wms");
 define("SITENAME","Warranty");
-define("SITEPATH","http://localhost/Rifle/");
+define("SITEPATH","");
 define("DEBUG",true);
 define('DSN', 'mysql:host='.SERVER.';dbname='.DATABASE.';');
 
