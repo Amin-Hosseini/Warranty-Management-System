@@ -1,4 +1,5 @@
-﻿<?php
+<?php
+print_R($_REQUEST);
 if ($_POST['ResCode'] == '0') {
 	//--پرداخت در بانک باموفقیت بوده
 	include_once('../lib/nusoap.php');
@@ -29,71 +30,24 @@ if ($_POST['ResCode'] == '0') {
 		if($result == 0) {
 			//-- تمام مراحل پرداخت به درستی انجام شد.
 			//-- آماده کردن خروجی
-			echo 'The transaction was successful';
+			//echo 'The transaction was successful';
+			
+			$Q = "UPDATE pay_info SET result = 1, date = ".time().", refid = '".$_POST['RefId']."', salerefid = '".$verifySaleReferenceId."' WHERE order_id = " . $orderId ;
+	        if ($conn->exec( $Q ))
+	            header( "Location: ./index.php?Page=War-Gun-Rep-App&SuccessfulPayment" );
+	        
 		} else {
 			//-- در درخواست واریز وجه مشکل به وجود آمد. درخواست بازگشت وجه داده شود.
 			$client->call('bpReversalRequest', $parameters, $namespace);			
-			echo 'Error : '. $result;
+			header( "Location: ./index.php?Page=War-Gun-Rep-UnApp&UnsuccessfulPayment" );
 		}
 	} else {
 		//-- وریفای به مشکل خورد٬ نمایش پیغام خطا و بازگشت زدن مبلغ
 		$client->call('bpReversalRequest', $parameters, $namespace);
-		echo 'Error : '. $result;
+		header( "Location: ./index.php?Page=War-Gun-Rep-UnApp&UnsuccessfulPayment" );
 	}
 } else {
 	//-- پرداخت با خطا همراه بوده
-	echo 'Error : '. $_POST['ResCode'];
+	header( "Location: ./index.php?Page=War-Gun-Rep-UnApp&UnsuccessfulPayment" );
 }
 ?>
-
-
-<body>
-    <form id="form1" runat="server">
-    <table width="100%" cellspacing="0" cellpadding="0" align="center">
-        <tr>
-            <td>
-                <table class="MainTable" cellspacing="5" cellpadding="1" align="center">
-                    <tr class="HeaderTr">
-                        <td colspan="2" align="center" height="25">
-                            <span class="HeaderText">CallBack Params</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="LabelTd">
-                            <span>RefId</span>
-                        </td>
-                        <td>
-                            <span><?php echo $_POST['RefId']; ?></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="LabelTd">
-                            <span>ResCode</span>
-                        </td>
-                        <td>
-                            <span><?php echo $_POST['ResCode']; ?></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="LabelTd">
-                            <span>SaleOrderId</span>
-                        </td>
-                        <td>
-                            <span><?php echo $_POST['SaleOrderId']; ?></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="LabelTd">
-                            <span>SaleReferenceId</span>
-                        </td>
-                        <td>
-                            <span><?php echo $_POST['SaleReferenceId']; ?></span>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
-    </form>
-</body>
-</html>

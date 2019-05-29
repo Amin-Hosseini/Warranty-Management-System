@@ -12,9 +12,7 @@
                     <a href="index.php?Page=Main"><i class="fa fa-home fa-lg"></i> صفحه نخست</a>
                     <i class="fa fa-circle fa-lg"></i>
                 </li>
-                <li>
-                    <span><i class="fa fa-user"></i> ثبت اطلاعات نماینده</span>
-                </li>
+
             </ul>
             
         </div>

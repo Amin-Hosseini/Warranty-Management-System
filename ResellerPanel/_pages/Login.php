@@ -1,8 +1,3 @@
-﻿<head>
-    <!-- BEGIN PAGE LEVEL PLUGINS -->
-    <link href="../assets/pages/css/login-rtl.css" rel="stylesheet" type="text/css" />  
-    <!-- END PAGE LEVEL PLUGINS -->
-</head>
 <?php
 // Login
 if(isset($_POST['LoginBtn']) and $_POST['LoginBtn']=="Insert"){
@@ -15,34 +10,50 @@ if(isset($_POST['LoginBtn']) and $_POST['LoginBtn']=="Insert"){
 		$msg = "لطفا موارد درخواستی را تکمیل نمائید .";
 		$faicon = "fa-asterisk";
 	} else {
-		$SqlSelRes = "SELECT * FROM reseller_profile WHERE rs_email = '$email'" ;
-		$SqlSelRes = $conn->query($SqlSelRes);
+		$SqlSelRes = "SELECT * FROM reseller_profile WHERE rs_email = ?" ;
+		$SqlSelRes = $conn->prepare($SqlSelRes);
+		$SqlSelRes->execute( array( $email ) );
+		
 		$SqlSelRes->setFetchMode(PDO::FETCH_ASSOC);
 		$RowRes = $SqlSelRes->fetch();	
-		// Check Email Res
-		if ( $SqlSelRes->rowCount() == 0 ) {
-			$type = "alert-danger";
-			$msg = "اطلاعات وارد شده صحیح نیست .";
-			$faicon = "fa-asterisk";
-		}
+
 		// Check Email Res
 		if ( $SqlSelRes->rowCount() == 1 ) {
-			if ( $email == $RowRes['rs_email'] and $pass == $RowRes['rs_pass'] )
+			if ( $pass == $RowRes['rs_pass'] )
 			{
 				if ( !isset($_SESSION) ) { session_start(); }
 				$_SESSION['ResID'] = $RowRes['rs_id'];
+				$_SESSION['Res_FirstName'] = $RowRes['rs_fname'];
+				$_SESSION['Res_LastName'] = $RowRes['rs_lname'];
 				$_SESSION['ResStatus'] = "Login";
-				header('Location: index.php?Page=Main');
-				$_POST = NULL;
+				header('Location: ./index.php?Page=Main');
+				exit();
 				$type = "alert-success";
 				$msg = "شما با موفقیت وارد شدید . لطفا کمی صبر نمائید .";
 				$faicon = "fa-check-circle";		
 			}
-		}				
+			else
+			{
+				$type = "alert-danger";
+				$msg = "اطلاعات وارد شده صحیح نیست .";
+				$faicon = "fa-asterisk";
+			}
+		}
+		else
+		{
+			$type = "alert-danger";
+			$msg = "اطلاعات وارد شده صحیح نیست .";
+			$faicon = "fa-asterisk";
+		}
 		$conn = null;
 	}
 }
 ?>
+<head>
+    <!-- BEGIN PAGE LEVEL PLUGINS -->
+    <link href="../assets/pages/css/login-rtl.css" rel="stylesheet" type="text/css" />  
+    <!-- END PAGE LEVEL PLUGINS -->
+</head>
 <body class="login">
     <!-- BEGIN LOGO -->
     <div class="logo">
@@ -95,7 +106,7 @@ if(isset($_POST['LoginBtn']) and $_POST['LoginBtn']=="Insert"){
                 <h4>پرتال ثبت و مدیریت گارانتی محصولات</h4>
                 -->
             </div>
-            <div class="create-account">
+            <div class="create-account"  style="display:none">
                 <p>
                     <a href="#" id="register-btn" class="uppercase">درخواست نمایندگی</a>
                 </p>
@@ -103,5 +114,5 @@ if(isset($_POST['LoginBtn']) and $_POST['LoginBtn']=="Insert"){
         </form>
         <!-- END LOGIN FORM -->
     </div>
-    <div class="copyright"> تست فوتر </div>
+    <div class="copyright"> تمامی حقوق برای این سایت محفوظ می باشد . </div>
 </body>
