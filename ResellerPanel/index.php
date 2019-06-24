@@ -1,5 +1,7 @@
-﻿<?php
+<?php
+ini_set( 'display_errors', 0 );
 if ( !isset($_SESSION) ) { session_start(); }
+ob_start();
 include ('../_inc/jdf.php');
 require_once("../_inc/os_config.php");
 require_once("../_inc/connect.php"); 
@@ -16,23 +18,33 @@ if(isset($_GET['Page']))
 			break;
 
 		case "War-Gun-Reg";
-			$TitleIndex = "ثبت گارانتی سلاح";
+			$TitleIndex = "ثبت گارانتی محصول";
 			$URL = "War-Gun-Reg.php";
 			break;
 
-		case "War-Gun-Rep";
-			$TitleIndex = "";
-			$URL = "War-Gun-Rep.php";
+		case "War-Gun-Rep-UnApp";
+			$TitleIndex = "گارانتی های پرداخت نشده";
+			$URL = "War-Gun-Rep-UnApp.php";
+			break;
+
+			case "War-Gun-Rep-App";
+			$TitleIndex = "گارانتی های پرداخت شده";
+			$URL = "War-Gun-Rep-App.php";
 			break;			
 
 		case "Gun-Rep";
-			$TitleIndex = "ویرایش اطلاعات سلاح";
+			$TitleIndex = "ویرایش اطلاعات محصول";
 			$URL = "Gun-Rep.php";
 			break;
 			
 		case "War-Gun-Status";
-			$TitleIndex = "ویرایش اطلاعات سلاح";
+			$TitleIndex = "ویرایش اطلاعات محصول";
 			$URL = "War-Gun-Status.php";
+			break;
+			
+		case "Money-Reports";
+			$TitleIndex = "گزارشات مالی";
+			$URL = "Money-Reports.php";
 			break;
 
 		case "War-Payment";
@@ -132,72 +144,24 @@ if( !isset($_SESSION['ResID']) ){
                 <div class="top-menu">
                     <ul class="nav navbar-nav pull-right">
                         <!-- BEGIN NOTIFICATION DROPDOWN -->
-                        <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
-                            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                                <i class="icon-bell"></i>
-                                <span class="badge badge-default"> 7 </span>
-                            </a>
-                        </li>
-                        <li class="dropdown dropdown-extended dropdown-inbox" id="header_inbox_bar">
-                            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                                <i class="icon-envelope-open"></i>
-                                <span class="badge badge-default"> 4 </span>
-                            </a>
-                        </li>
-                        <li class="dropdown dropdown-extended dropdown-tasks" id="header_task_bar">
-                            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                                <i class="icon-calendar"></i>
-                                <span class="badge badge-default"> 3 </span>
-                            </a>
-                        </li>
                         <!-- END TODO DROPDOWN -->
                         <li class="dropdown dropdown-user">
                             <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                                <img alt="" class="img-circle" src="../assets/layouts/layout/img/avatar3_small.jpg" />
-                                <span class="username username-hide-on-mobile"> Nick </span>
+                                <?php //<img alt="" class="img-circle" src="../assets/layouts/layout/img/avatar3_small.jpg" /> ?>
+                                <span class="username username-hide-on-mobile"> <?php echo $_SESSION['Res_FirstName'] . " " . $_SESSION['Res_LastName'] ?> </span>
                                 <i class="fa fa-angle-down"></i>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-default">
-                                <li>
-                                    <a href="page_user_profile_1.html">
-                                        <i class="icon-user"></i> My Profile </a>
-                                </li>
-                                <li>
-                                    <a href="app_calendar.html">
-                                        <i class="icon-calendar"></i> My Calendar </a>
-                                </li>
-                                <li>
-                                    <a href="app_inbox.html">
-                                        <i class="icon-envelope-open"></i> My Inbox
-                                        <span class="badge badge-danger"> 3 </span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="app_todo.html">
-                                        <i class="icon-rocket"></i> My Tasks
-                                        <span class="badge badge-success"> 7 </span>
-                                    </a>
-                                </li>
-                                <li class="divider"> </li>
-                                <li>
-                                    <a href="page_user_lock_1.html">
-                                        <i class="icon-lock"></i> Lock Screen </a>
-                                </li>
-                                <li>
-                                    <a href="page_user_login_1.html">
-                                        <i class="icon-key"></i> Log Out </a>
-                                </li>
+                                    <li>
+                                        <a href="./index.php?Page=Logout">
+                                            <i class="icon-key"></i> خروج از سامانه </a>
+                                    </li>
                             </ul>
                         </li>
                         <!-- END USER LOGIN DROPDOWN -->
                         <!-- BEGIN QUICK SIDEBAR TOGGLER -->
                         <!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
-                        <li class="dropdown dropdown-quick-sidebar-toggler">
-                            <a href="javascript:;" class="dropdown-toggle">
-                                <i class="icon-logout"></i>
-                            </a>
-                        </li>
-                        <!-- END QUICK SIDEBAR TOGGLER -->
+
                     </ul>
                 </div>
                 <!-- END TOP NAVIGATION MENU -->
@@ -233,295 +197,48 @@ if( !isset($_SESSION['ResID']) ){
                         </li>
                         <!-- END SIDEBAR TOGGLER BUTTON -->
 
-                        <li class="nav-item start <?php if( !isset($_GET['Page']) or $_GET['Page']== 'Main' or $_GET['Page']== 'Main2' ) { ?>active open<?php } ?>">
-                            <a href="javascript:;" class="nav-link nav-toggle">
-                                <i class="fa fa-home"></i>
-                                <span class="title">صفحه نخست</span>
-                                <span class="arrow"></span>
-                            </a>
-                            <ul class="sub-menu">
-                                <li class="nav-item start ">
-                                    <a href="index.html" class="nav-link ">
-                                        <i class="icon-bar-chart"></i>
-                                        <span class="title">Dashboard 1</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item start ">
-                                    <a href="dashboard_2.html" class="nav-link ">
-                                        <i class="icon-bulb"></i>
-                                        <span class="title">Dashboard 2</span>
-                                        <span class="badge badge-success">1</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item start ">
-                                    <a href="dashboard_3.html" class="nav-link ">
-                                        <i class="icon-graph"></i>
-                                        <span class="title">Dashboard 3</span>
-                                        <span class="badge badge-danger">5</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item <?php if( isset($_GET['Page'])) { if ($_GET['Page']== 'War-Gun-Reg' or $_GET['Page']== 'War-Gun-Reg') { ?>start active open<?php } } ?>">
+                        <li class="nav-item <?php if( isset($_GET['Page'])) { if ( strstr($_GET['Page'], 'War-Gun-' )) { ?>start active open<?php } } ?>">
                             <a href="javascript:;" class="nav-link nav-toggle">
                                 <i class="fa fa-users"></i>
                                 <span class="title">گارانتی</span>
                                 <span class="selected"></span>
-                                <span class="arrow open"></span>
+                                <span class="arrow"></span>
                             </a>
                             <ul class="sub-menu">
                                 <li class="nav-item <?php if( isset($_GET['Page']) and $_GET['Page']== 'War-Gun-Reg' ) { ?>active<?php } ?> ">
                                     <a href="index.php?Page=War-Gun-Reg" class="nav-link">
-                                        <span class="title">ثبت گارانتی سلاح</span>
+                                        <span class="title">درخواست گارانتی محصول</span>
                                     </a>
                                 </li>
-                                <li class="nav-item  ">
-                                    <a href="index.php?Page=War-Gun-Rep" class="nav-link ">
-                                        <span class="title">گزارش گارانتی سلاح</span>
+                                <li class="nav-item <?php if( isset($_GET['Page']) and $_GET['Page']== 'War-Gun-Rep-UnApp' ) { ?>active<?php } ?> ">
+                                    <a href="index.php?Page=War-Gun-Rep-UnApp" class="nav-link ">
+                                        <span class="title">گارانتی های پرداخت نشده</span>
                                     </a>
                                 </li>
-                                <li class="nav-item  ">
-                                    <a href="form_input_mask.html" class="nav-link ">
-                                        <span class="title">گزارشات</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item  ">
-                                    <a href="form_editable.html" class="nav-link ">
-                                        <span class="title">Form X-editable</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item  ">
-                                    <a href="index.php?Page=Logout" class="nav-link ">
-                                        <span class="title">خروج</span>
+                                <li class="nav-item <?php if( isset($_GET['Page']) and $_GET['Page']== 'War-Gun-Rep-App' ) { ?>active<?php } ?>  ">
+                                    <a href="index.php?Page=War-Gun-Rep-App" class="nav-link ">
+                                        <span class="title">گارانتی های پرداخت شده</span>
                                     </a>
                                 </li>
                             </ul>
                         </li>
-                        <li class="nav-item  ">
+
+						<li class="nav-item <?php if( isset($_GET['Page'])) { if ( strstr( $_GET['Page'], '-Reports' ) ) { ?>start active open<?php } } ?>">
                             <a href="javascript:;" class="nav-link nav-toggle">
-                                <i class="icon-social-dribbble"></i>
-                                <span class="title">محصولات</span>
+                                <i class="fa fa-money"></i>
+                                <span class="title">گزارشات</span>
+                                <span class="selected"></span>
                                 <span class="arrow"></span>
                             </a>
                             <ul class="sub-menu">
-                                <li class="nav-item  ">
-                                    <a href="index.php?Page=Gun-Reg" class="nav-link ">
-                                        <i class="icon-info"></i>
-                                        <span class="title">ثبت اطلاعات سلاح</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item  ">
-                                    <a href="index.php?Page=Gun-Rep" class="nav-link ">
-                                        <i class="icon-call-end"></i>
-                                        <span class="title">ویرایش اطلاعات سلاح</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item  ">
-                                    <a href="javascript:;" class="nav-link nav-toggle">
-                                        <i class="icon-notebook"></i>
-                                        <span class="title">Portfolio</span>
-                                        <span class="arrow"></span>
-                                    </a>
-                                    <ul class="sub-menu">
-                                        <li class="nav-item ">
-                                            <a href="page_general_portfolio_1.html" class="nav-link "> Portfolio 1 </a>
-                                        </li>
-                                        <li class="nav-item ">
-                                            <a href="page_general_portfolio_2.html" class="nav-link "> Portfolio 2 </a>
-                                        </li>
-                                        <li class="nav-item ">
-                                            <a href="page_general_portfolio_3.html" class="nav-link "> Portfolio 3 </a>
-                                        </li>
-                                        <li class="nav-item ">
-                                            <a href="page_general_portfolio_4.html" class="nav-link "> Portfolio 4 </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="nav-item  ">
-                                    <a href="javascript:;" class="nav-link nav-toggle">
-                                        <i class="icon-magnifier"></i>
-                                        <span class="title">Search</span>
-                                        <span class="arrow"></span>
-                                    </a>
-                                    <ul class="sub-menu">
-                                        <li class="nav-item ">
-                                            <a href="page_general_search.html" class="nav-link "> Search 1 </a>
-                                        </li>
-                                        <li class="nav-item ">
-                                            <a href="page_general_search_2.html" class="nav-link "> Search 2 </a>
-                                        </li>
-                                        <li class="nav-item ">
-                                            <a href="page_general_search_3.html" class="nav-link "> Search 3 </a>
-                                        </li>
-                                        <li class="nav-item ">
-                                            <a href="page_general_search_4.html" class="nav-link "> Search 4 </a>
-                                        </li>
-                                        <li class="nav-item ">
-                                            <a href="page_general_search_5.html" class="nav-link "> Search 5 </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="nav-item  ">
-                                    <a href="page_general_pricing.html" class="nav-link ">
-                                        <i class="icon-tag"></i>
-                                        <span class="title">Pricing</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item  ">
-                                    <a href="page_general_faq.html" class="nav-link ">
-                                        <i class="icon-wrench"></i>
-                                        <span class="title">FAQ</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item  ">
-                                    <a href="page_general_blog.html" class="nav-link ">
-                                        <i class="icon-pencil"></i>
-                                        <span class="title">Blog</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item  ">
-                                    <a href="page_general_blog_post.html" class="nav-link ">
-                                        <i class="icon-note"></i>
-                                        <span class="title">Blog Post</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item  ">
-                                    <a href="page_general_invoice.html" class="nav-link ">
-                                        <i class="icon-envelope"></i>
-                                        <span class="title">Invoice</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item  ">
-                                    <a href="page_general_invoice_2.html" class="nav-link ">
-                                        <i class="icon-envelope"></i>
-                                        <span class="title">Invoice 2</span>
+                                <li class="nav-item <?php if( isset($_GET['Page']) and $_GET['Page']== 'Money-Reports' ) { ?>active<?php } ?> ">
+                                    <a href="index.php?Page=Money-Reports" class="nav-link">
+                                        <span class="title">مشاهده گزارشات مالی</span>
                                     </a>
                                 </li>
                             </ul>
                         </li>
-                        <li class="nav-item  ">
-                            <a href="javascript:;" class="nav-link nav-toggle">
-                                <i class="icon-settings"></i>
-                                <span class="title">System</span>
-                                <span class="arrow"></span>
-                            </a>
-                            <ul class="sub-menu">
-                                <li class="nav-item  ">
-                                    <a href="page_cookie_consent_1.html" class="nav-link ">
-                                        <span class="title">Cookie Consent 1</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item  ">
-                                    <a href="page_cookie_consent_2.html" class="nav-link ">
-                                        <span class="title">Cookie Consent 2</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item  ">
-                                    <a href="page_system_coming_soon.html" class="nav-link " target="_blank">
-                                        <span class="title">Coming Soon</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item  ">
-                                    <a href="page_system_404_1.html" class="nav-link ">
-                                        <span class="title">404 Page 1</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item  ">
-                                    <a href="page_system_404_2.html" class="nav-link " target="_blank">
-                                        <span class="title">404 Page 2</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item  ">
-                                    <a href="page_system_404_3.html" class="nav-link " target="_blank">
-                                        <span class="title">404 Page 3</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item  ">
-                                    <a href="page_system_500_1.html" class="nav-link ">
-                                        <span class="title">500 Page 1</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item  ">
-                                    <a href="page_system_500_2.html" class="nav-link " target="_blank">
-                                        <span class="title">500 Page 2</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a href="javascript:;" class="nav-link nav-toggle">
-                                <i class="icon-folder"></i>
-                                <span class="title">Multi Level Menu</span>
-                                <span class="arrow "></span>
-                            </a>
-                            <ul class="sub-menu">
-                                <li class="nav-item">
-                                    <a href="javascript:;" class="nav-link nav-toggle">
-                                        <i class="icon-settings"></i> Item 1
-                                        <span class="arrow"></span>
-                                    </a>
-                                    <ul class="sub-menu">
-                                        <li class="nav-item">
-                                            <a href="javascript:;" target="_blank" class="nav-link">
-                                                <i class="icon-user"></i> Arrow Toggle
-                                                <span class="arrow nav-toggle"></span>
-                                            </a>
-                                            <ul class="sub-menu">
-                                                <li class="nav-item">
-                                                    <a href="#" class="nav-link">
-                                                        <i class="icon-power"></i> Sample Link 1</a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a href="#" class="nav-link">
-                                                        <i class="icon-paper-plane"></i> Sample Link 1</a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a href="#" class="nav-link">
-                                                        <i class="icon-star"></i> Sample Link 1</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="#" class="nav-link">
-                                                <i class="icon-camera"></i> Sample Link 1</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="#" class="nav-link">
-                                                <i class="icon-link"></i> Sample Link 2</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="#" class="nav-link">
-                                                <i class="icon-pointer"></i> Sample Link 3</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="javascript:;" target="_blank" class="nav-link">
-                                        <i class="icon-globe"></i> Arrow Toggle
-                                        <span class="arrow nav-toggle"></span>
-                                    </a>
-                                    <ul class="sub-menu">
-                                        <li class="nav-item">
-                                            <a href="#" class="nav-link">
-                                                <i class="icon-tag"></i> Sample Link 1</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="#" class="nav-link">
-                                                <i class="icon-pencil"></i> Sample Link 1</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="#" class="nav-link">
-                                                <i class="icon-graph"></i> Sample Link 1</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link">
-                                        <i class="icon-bar-chart"></i> Item 3 </a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
+					</ul>
                     <!-- END SIDEBAR MENU -->
                     <!-- END SIDEBAR MENU -->
                 </div>
@@ -593,10 +310,10 @@ if( !isset($_SESSION['ResID']) ){
     <!-- END THEME LAYOUT SCRIPTS -->
 
 <?php
-if( isset($_GET['Page']) )
+/*if( isset($_GET['Page']) )
 	{
 	if ( $_GET['Page']== 'War-Gun-Reg' or $_GET['Page']== 'War-Gun-Rep' )
-		{
+		{*/
 ?>
 <!-- BEGIN PAGE LEVEL PLUGINS -->
 <script src="../assets/global/scripts/datatable.js" type="text/javascript"></script>
@@ -608,7 +325,7 @@ if( isset($_GET['Page']) )
 <script src="../assets/pages/scripts/table-datatables-managed.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
 <?php
-		}
-} 
+		/*}
+} */
 ?>
 </html>
