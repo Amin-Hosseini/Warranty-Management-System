@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.3
+-- version 4.8.5
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:3306
--- Generation Time: May 29, 2019 at 04:06 PM
--- Server version: 5.7.26
--- PHP Version: 7.2.7
+-- Host: 127.0.0.1
+-- Generation Time: Jun 24, 2019 at 08:43 PM
+-- Server version: 10.1.40-MariaDB
+-- PHP Version: 7.2.18
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -19,7 +19,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `rifle_gr`
+-- Database: `ae_wms`
 --
 
 -- --------------------------------------------------------
@@ -30,11 +30,11 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `admin_profile` (
   `id` int(11) NOT NULL,
-  `fname` text NOT NULL,
-  `lname` text NOT NULL,
-  `email` text NOT NULL,
-  `password` text NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='By : Arman Hosseini';
+  `fname` text CHARACTER SET latin1 NOT NULL,
+  `lname` text CHARACTER SET latin1 NOT NULL,
+  `email` text CHARACTER SET latin1 NOT NULL,
+  `password` text CHARACTER SET latin1 NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dumping data for table `admin_profile`
@@ -51,8 +51,8 @@ INSERT INTO `admin_profile` (`id`, `fname`, `lname`, `email`, `password`) VALUES
 
 CREATE TABLE `category_profile` (
   `cat_id` int(11) NOT NULL,
-  `cat_name` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='By : Arman Hosseini';
+  `cat_name` text COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dumping data for table `category_profile`
@@ -146,15 +146,6 @@ CREATE TABLE `reseller_profile` (
   `rs_email` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `rs_pass` varchar(40) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Dumping data for table `reseller_profile`
---
-
-INSERT INTO `reseller_profile` (`rs_id`, `rs_lname`, `rs_fname`, `rs_mobile`, `rs_shop`, `rs_phone`, `rs_state`, `rs_city`, `rs_add`, `rs_email`, `rs_pass`) VALUES
-(1, 'طاهری', 'محسن', '09121231234', 'فروشگاه اسلحه طاهری', '02166982510', 'تهران', 'تهران', 'میدان فاطمی نرسیده به خ کوثر پلاک 112', 'mohsentaheri@yahoo.com', '381979d66248bb8e0d8581de72eb77eef78faaa1'),
-(4, 'حسینی', 'آرمان', '09159126068', 'لرد سیستم', '05143453454', 'خراسان رضوی', 'نیشابور', 'بلوار پژوهش ، مسکن 155 واحدی ، مروافن بلوک آ12 شمال طبقه 4', 'persian@kimo.com', '356a192b7913b04c54574d18c28d46e6395428ab'),
-(5, 'حسینی', 'امین', '09151111111', 'فروشگاه لرد سیستم', '05143355012', 'خراسان رضوی', 'نیشابور', '17 شهریور - بین 4 و 6', 'amir@yahoo.com', '7c4a8d09ca3762af61e59520943dc26494f8941b');
 
 -- --------------------------------------------------------
 
